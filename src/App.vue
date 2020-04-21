@@ -1,33 +1,25 @@
 <template>
     <v-app>
-        <v-app-bar app>
-            <v-row justify="center">
-                <nav-item to="Summary" :exact="true" />
-            </v-row>
-        </v-app-bar>
+        <navbar />
 
         <v-content>
-            <router-view></router-view>
+            <router-view />
         </v-content>
 
-        <v-footer app>
-            <!-- -->
-        </v-footer>
+        <my-footer />
     </v-app>
 </template>
 
 <script>
-    import NavItem from "./components/NavItem"
+    import MyFooter from "./components/MyFooter"
+    import Navbar from "./components/Navbar"
 
     export default {
         name: "App",
 
         components: {
-            NavItem,
+            MyFooter,
+            Navbar
         },
-
-        data: () => ({
-            //
-        }),
     }
 </script>

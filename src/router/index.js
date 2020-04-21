@@ -1,7 +1,7 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from "vue"
+import VueRouter from "vue-router"
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
     {
@@ -9,10 +9,17 @@ const routes = [
         name: "Summary",
         component: () => import("../views/Summary.vue"),
     },
-];
+    {
+        path: "/detailed",
+        name: "Detailed",
+        component: () => import("../views/Detailed.vue"),
+    },
+]
 
 const router = new VueRouter({
     routes,
-});
+})
 
-export default router;
+export default router
+
+export { routes }
