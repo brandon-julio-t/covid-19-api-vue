@@ -65,15 +65,7 @@
                         :items="countriesData"
                         :search="search"
                         item-key="Country"
-                    >
-                        <template v-slot:item="{ item }">
-                            <tr>
-                                <td v-for="(key, index) in unusedProperties" :key="index" class="text-start">
-                                    {{ toLocaleNumberOrNot(item[key]) }}
-                                </td>
-                            </tr>
-                        </template>
-                    </v-data-table>
+                    ></v-data-table>
                 </section>
             </v-col>
         </v-row>
