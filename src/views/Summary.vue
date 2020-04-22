@@ -55,13 +55,25 @@
                         </v-col>
                     </v-row>
 
+                    <v-subheader class="d-flex justify-center pb-6">
+                        Last Update: {{ toLocaleDate(subtractDate(data.Date, 1)) }}
+                    </v-subheader>
+
                     <v-data-table
                         :headers="tableHeaders"
                         :items-per-page="10"
                         :items="countriesData"
                         :search="search"
                         item-key="Country"
-                    ></v-data-table>
+                    >
+                        <template v-slot:item="{ item }">
+                            <tr>
+                                <td v-for="(key, index) in unusedProperties" :key="index" class="text-start">
+                                    {{ toLocaleNumberOrNot(item[key]) }}
+                                </td>
+                            </tr>
+                        </template>
+                    </v-data-table>
                 </section>
             </v-col>
         </v-row>
@@ -78,7 +90,7 @@
             AppError,
         },
 
-        data: function () {
+        data() {
             return {
                 data: null,
                 error: null,
@@ -88,8 +100,8 @@
 
         computed: {
             globalData: function () {
-                /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries */
-                return Object.entries(this.data.Global).map(([key, value]) => {
+                return Object.entries(this.data.Global).map(entry => {
+                    const [key, value] = entry
                     return {
                         key: this.splitByCapitalLetter(key),
                         value: Number(value).toLocaleString(),
@@ -98,21 +110,20 @@
             },
 
             countriesData: function () {
-                return this.data.Countries.map(data => {
-                    data.Date = new Date(data.Date).toLocaleString()
-                    return data
-                })
+                return this.data.Countries
             },
 
             tableHeaders: function () {
-                return this.data
-                    ? Object.keys(this.countriesData[0])
-                          .filter(key => !["CountryCode", "Slug"].includes(key))
-                          .map(key => ({
-                              text: key === "Date" ? "Last Updated" : this.splitByCapitalLetter(key),
-                              value: key,
-                          }))
-                    : []
+                return this.unusedProperties.map(key => {
+                    return {
+                        text: this.splitByCapitalLetter(key),
+                        value: key,
+                    }
+                })
+            },
+
+            unusedProperties: function () {
+                return Object.keys(this.countriesData[0]).filter(key => !["CountryCode", "Slug", "Date"].includes(key))
             },
         },
 
@@ -127,6 +138,12 @@
 
         methods: {
             splitByCapitalLetter: text => text.match(/[A-Z][a-z]+/g).join(" "), // https://stackoverflow.com/a/7888303
+
+            subtractDate: (date, subtract) => new Date(date).setDate(new Date(date).getDate() - subtract), // https://stackoverflow.com/questions/1296358/subtract-days-from-a-date-in-javascript
+
+            toLocaleDate: date => new Date(date).toLocaleDateString(),
+
+            toLocaleNumberOrNot: num => (Number.isSafeInteger(num) ? Number(num).toLocaleString() : num),
         },
     }
 </script>

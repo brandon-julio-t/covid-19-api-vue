@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <h1 class="display-2 text-center py-6" id="Detailed">Detailed</h1>
 
         <app-error v-if="error"></app-error>
@@ -14,7 +14,7 @@
         </v-row>
 
         <v-row v-else justify="center">
-            <v-col lg="4">
+            <v-col lg="3">
                 <v-autocomplete
                     v-model="selectedCountry"
                     :items="countries"
@@ -25,7 +25,7 @@
                     outlined
                 ></v-autocomplete>
             </v-col>
-            <v-col lg="4">
+            <v-col lg="3">
                 <v-select
                     v-model="selectedCountryDataCategoryName"
                     :disabled="!selectedCountryDataHasValue"
@@ -48,7 +48,7 @@
                 :fill="fillSparkline"
                 :gradient="['#eeaeca', '#94bbe9']"
                 :value="selectedCountryCategorizedData"
-                label-size="2.5"
+                label-size="2.25"
                 line-width="1"
                 padding="12"
                 show-labels
@@ -110,34 +110,79 @@
             AppError,
         },
 
-        data: function () {
+        data() {
             return {
+                allCountries: [],
+                allCountryData: null,
                 animateSparkline: true,
-                countries: null,
                 error: null,
                 fillSparkline: false,
                 selectedCountry: "",
-                selectedCountryCategorizedData: null,
-                selectedCountryData: null,
-                selectedCountryDataCategoryName: "",
+                selectedCountryDataCategoryName: "Confirmed",
+                previousConfirmed: 0,
+                previousDeaths: 0,
+                previousRecovered: 0,
             }
         },
 
         computed: {
             confirmed: function () {
-                return !this.selectedCountryData
-                    ? []
-                    : this.selectedCountryData.map(data => data.Confirmed).filter(data => data > 0)
+                return this.selectedCountryData
+                    ? this.selectedCountryData.map(data => data.Confirmed).filter(data => data > 0)
+                    : []
             },
             deaths: function () {
-                return !this.selectedCountryData
-                    ? []
-                    : this.selectedCountryData.map(data => data.Deaths).filter(data => data > 0)
+                return this.selectedCountryData
+                    ? this.selectedCountryData.map(data => data.Deaths).filter(data => data > 0)
+                    : []
             },
             recovered: function () {
-                return !this.selectedCountryData
-                    ? []
-                    : this.selectedCountryData.map(data => data.Recovered).filter(data => data > 0)
+                return this.selectedCountryData
+                    ? this.selectedCountryData.map(data => data.Recovered).filter(data => data > 0)
+                    : []
+            },
+
+            countries: function () {
+                return this.allCountries
+                    ? this.allCountries
+                          .map(j => ({
+                              text: j.Country,
+                              value: j.ISO2,
+                          }))
+                          .sort((v1, v2) => {
+                              const a = v1.text
+                              const b = v2.text
+                              return a < b ? -1 : a > b ? 1 : 0 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+                          })
+                    : []
+            },
+
+            selectedCountryData: function () {
+                return this.allCountryData
+                    ? this.allCountryData
+                          .map(data => {
+                              return {
+                                  Confirmed: data.Confirmed,
+                                  Deaths: data.Deaths,
+                                  Recovered: data.Recovered,
+                                  Date: data.Date,
+                              }
+                          })
+                          .filter(data => data.Confirmed > 0 || data.Deaths > 0 || data.Recovered > 0)
+                    : []
+            },
+
+            selectedCountryCategorizedData: function () {
+                switch (this.selectedCountryDataCategoryName) {
+                    case "Confirmed":
+                        return this.confirmed
+                    case "Deaths":
+                        return this.deaths
+                    case "Recovered":
+                        return this.recovered
+                    default:
+                        return []
+                }
             },
 
             selectedCountryDataHasValue: function () {
@@ -158,34 +203,9 @@
 
                     fetch(countryDataUrl)
                         .then(res => res.json())
-                        .then(json => {
-                            this.selectedCountryData = json
-                                .map(data => ({
-                                    Confirmed: data.Confirmed,
-                                    Deaths: data.Deaths,
-                                    Recovered: data.Recovered,
-                                    Date: data.Date,
-                                }))
-                                .filter(data => {
-                                    return data.Confirmed > 0 && data.Deaths > 0 && data.Recovered > 0
-                                })
-
-                            if (this.selectedCountryData && this.selectedCountryData.length > 0) {
-                                this.selectedCountryCategorizedData = this.confirmed
-                                this.selectedCountryDataCategoryName = "Confirmed"
-                            }
-                        })
+                        .then(json => (this.allCountryData = json))
                         .catch(err => (this.error = err))
                 }
-            },
-
-            selectedCountryDataCategoryName: function (category) {
-                this.selectedCountryCategorizedData =
-                    category === "Confirmed" // Prevent prettier formatting into one line
-                        ? this.confirmed
-                        : category === "Deaths"
-                        ? this.deaths
-                        : this.recovered
             },
         },
 
@@ -194,30 +214,14 @@
 
             fetch(countriesUrl)
                 .then(response => response.json())
-                .then(json => {
-                    this.countries = json
-                        .map(j => ({
-                            text: j.Country,
-                            value: j.ISO2,
-                        }))
-                        /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort */
-                        .sort((v1, v2) => {
-                            const a = v1.text
-                            const b = v2.text
-                            return a < b ? -1 : a > b ? 1 : 0
-                        })
-                })
+                .then(json => (this.allCountries = json))
                 .catch(err => (this.error = err))
         },
 
         methods: {
-            toLocaleNumber: function (n) {
-                return Number(n).toLocaleString()
-            },
+            toLocaleDate: date => new Date(date).toLocaleDateString(),
 
-            toLocaleDate: function (d) {
-                return new Date(d).toLocaleDateString()
-            },
+            toLocaleNumber: num => Number(num).toLocaleString(),
         },
     }
 </script>

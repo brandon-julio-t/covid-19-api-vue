@@ -13,7 +13,7 @@
                             Vuetify
                         </app-external-link>
 
-                        <br>
+                        <br />
 
                         Data sourced from
                         <app-external-link href="https://covid19api.com/" icon="mdi-virus">
@@ -29,9 +29,9 @@
                             MIT License
                         </app-external-link>
 
-                        <br >
+                        <br />
 
-                        Copyright &copy; {{ new Date().getFullYear() }} Brandon Julio Thenaro
+                        Copyright &copy; {{ currentYear }} Brandon Julio Thenaro
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -40,13 +40,19 @@
 </template>
 
 <script>
-    import AppExternalLink from "./AppVExternalLink"
+    import AppExternalLink from "./AppExternalLink"
 
     export default {
         name: "AppFooter",
 
         components: {
-            AppExternalLink
+            AppExternalLink,
+        },
+
+        computed: {
+            currentYear: function () {
+                return new Date().getFullYear()
+            },
         },
     }
 </script>
