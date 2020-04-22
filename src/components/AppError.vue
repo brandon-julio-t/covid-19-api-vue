@@ -10,11 +10,8 @@
 
 <script>
     export default {
-        name: "ErrorView",
-        props: ['error']
+        name: "AppError",
     }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

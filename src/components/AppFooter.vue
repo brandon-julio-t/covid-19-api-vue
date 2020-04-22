@@ -5,31 +5,31 @@
                 <v-card class="text-center">
                     <v-card-text>
                         Made with
-                        <external-link href="https://vuejs.org/" icon="mdi-vuejs">
+                        <app-external-link href="https://vuejs.org/" icon="mdi-vuejs">
                             Vue
-                        </external-link>
+                        </app-external-link>
                         and
-                        <external-link href="https://vuetifyjs.com/en/" icon="mdi-vuetify">
+                        <app-external-link href="https://vuetifyjs.com/en/" icon="mdi-vuetify">
                             Vuetify
-                        </external-link>
+                        </app-external-link>
 
-                        <br />
+                        <br>
 
                         Data sourced from
-                        <external-link href="https://covid19api.com/" icon="mdi-virus">
+                        <app-external-link href="https://covid19api.com/" icon="mdi-virus">
                             COVID 19 API
-                        </external-link>
+                        </app-external-link>
                     </v-card-text>
 
-                    <v-divider />
+                    <v-divider></v-divider>
 
                     <v-card-text>
                         Released under the
-                        <external-link href="https://opensource.org/licenses/MIT">
+                        <app-external-link href="https://opensource.org/licenses/MIT">
                             MIT License
-                        </external-link>
+                        </app-external-link>
 
-                        <br />
+                        <br >
 
                         Copyright &copy; {{ new Date().getFullYear() }} Brandon Julio Thenaro
                     </v-card-text>
@@ -40,12 +40,13 @@
 </template>
 
 <script>
-    import ExternalLink from "./subcomponents/ExternalLink"
+    import AppExternalLink from "./AppVExternalLink"
 
     export default {
-        name: "MyFooter",
+        name: "AppFooter",
+
         components: {
-            ExternalLink
+            AppExternalLink
         },
     }
 </script>

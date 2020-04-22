@@ -7,11 +7,13 @@ const routes = [
     {
         path: "/",
         name: "Summary",
+        icon: "mdi-earth",
         component: () => import("../views/Summary.vue"),
     },
     {
         path: "/detailed",
         name: "Detailed",
+        icon: "mdi-chart-line",
         component: () => import("../views/Detailed.vue"),
     },
 ]

@@ -2,37 +2,37 @@
     <v-container>
         <h1 class="display-2 text-center py-6">Summary</h1>
 
-        <error-view v-if="error" />
+        <app-error v-if="error"></app-error>
 
-        <v-row justify="center" v-else-if="!data">
-            <v-col md="8">
-                <v-skeleton-loader class="text-center py-6" type="heading" />
-                <v-skeleton-loader type="list-item@6" />
-                <v-skeleton-loader class="text-center py-6" type="heading" />
+        <v-row v-else-if="!data" justify="center">
+            <v-col lg="8">
+                <v-skeleton-loader class="text-center py-6" type="heading"></v-skeleton-loader>
+                <v-skeleton-loader type="list-item@6"></v-skeleton-loader>
+                <v-skeleton-loader class="text-center py-6" type="heading"></v-skeleton-loader>
 
                 <v-row justify="center">
-                    <v-col md="4">
-                        <v-skeleton-loader type="text" />
+                    <v-col lg="4">
+                        <v-skeleton-loader type="text"></v-skeleton-loader>
                     </v-col>
                 </v-row>
 
-                <v-skeleton-loader type="table" />
+                <v-skeleton-loader type="table"></v-skeleton-loader>
             </v-col>
         </v-row>
 
-        <v-row justify="center" v-else>
-            <v-col md="8">
+        <v-row v-else justify="center">
+            <v-col lg="8">
                 <section>
                     <h2 class="display-1 text-center py-6">Global</h2>
 
                     <v-simple-table>
                         <tbody>
-                            <tr v-for="(value, label) in data.Global" :key="label">
+                            <tr v-for="(data, index) in globalData" :key="index">
                                 <th scope="row" class="py-5 headline">
-                                    {{ splitByCapitalLetter(label) }}
+                                    {{ data.key }}
                                 </th>
                                 <td class="headline">
-                                    {{ value.toLocaleString() }}
+                                    {{ data.value }}
                                 </td>
                             </tr>
                         </tbody>
@@ -43,33 +43,25 @@
                     <h2 class="display-1 text-center py-6">Countries</h2>
 
                     <v-row justify="center">
-                        <v-col md="6">
+                        <v-col lg="6">
                             <v-text-field
+                                v-model="search"
                                 clearable
                                 label="Search"
                                 outlined
+                                placeholder="Country Name / Number"
                                 prepend-inner-icon="mdi-filter"
-                                v-model="search"
                             ></v-text-field>
                         </v-col>
                     </v-row>
 
                     <v-data-table
-                        :headers="[
-                            { text: 'Country', value: 'Country' },
-                            { text: 'New Confirmed', value: 'NewConfirmed' },
-                            { text: 'Total Confirmed', value: 'TotalConfirmed' },
-                            { text: 'New Deaths', value: 'NewDeaths' },
-                            { text: 'Total Deaths', value: 'TotalDeaths' },
-                            { text: 'New Recovered', value: 'NewRecovered' },
-                            { text: 'Total Recovered', value: 'TotalRecovered' },
-                            { text: 'Last Update', value: 'Date' },
-                        ]"
+                        :headers="tableHeaders"
                         :items-per-page="10"
-                        :items="data.Countries"
+                        :items="countriesData"
                         :search="search"
                         item-key="Country"
-                    />
+                    ></v-data-table>
                 </section>
             </v-col>
         </v-row>
@@ -77,11 +69,51 @@
 </template>
 
 <script>
-    import ErrorView from "../components/subcomponents/ErrorView"
+    import AppError from "../components/AppError"
 
     export default {
+        name: "Home",
+
         components: {
-            ErrorView,
+            AppError,
+        },
+
+        data: function () {
+            return {
+                data: null,
+                error: null,
+                search: "",
+            }
+        },
+
+        computed: {
+            globalData: function () {
+                /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries */
+                return Object.entries(this.data.Global).map(([key, value]) => {
+                    return {
+                        key: this.splitByCapitalLetter(key),
+                        value: Number(value).toLocaleString(),
+                    }
+                })
+            },
+
+            countriesData: function () {
+                return this.data.Countries.map(data => {
+                    data.Date = new Date(data.Date).toLocaleString()
+                    return data
+                })
+            },
+
+            tableHeaders: function () {
+                return this.data
+                    ? Object.keys(this.countriesData[0])
+                          .filter(key => !["CountryCode", "Slug"].includes(key))
+                          .map(key => ({
+                              text: key === "Date" ? "Last Updated" : this.splitByCapitalLetter(key),
+                              value: key,
+                          }))
+                    : []
+            },
         },
 
         created() {
@@ -90,21 +122,12 @@
             fetch(summaryUrl)
                 .then(response => response.json())
                 .then(json => (this.data = json))
-                .then(() => this.data.Countries.map(d => (d.Date = new Date(d.Date).toLocaleString())))
                 .catch(err => (this.error = err))
         },
-
-        data: () => ({
-            data: null,
-            error: null,
-            search: "",
-        }),
 
         methods: {
             splitByCapitalLetter: text => text.match(/[A-Z][a-z]+/g).join(" "), // https://stackoverflow.com/a/7888303
         },
-
-        name: "Home",
     }
 </script>
 
