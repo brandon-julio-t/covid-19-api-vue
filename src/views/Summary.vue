@@ -56,7 +56,7 @@
                     </v-row>
 
                     <v-subheader class="d-flex justify-center pb-6">
-                        Last Update: {{ toLocaleDate(subtractDate(data.Date, 1)) }}
+                        API Date: {{ toLocaleDate((data.Date)) }}
                     </v-subheader>
 
                     <v-data-table
@@ -131,11 +131,7 @@
         methods: {
             splitByCapitalLetter: text => text.match(/[A-Z][a-z]+/g).join(" "), // https://stackoverflow.com/a/7888303
 
-            subtractDate: (date, subtract) => new Date(date).setDate(new Date(date).getDate() - subtract), // https://stackoverflow.com/questions/1296358/subtract-days-from-a-date-in-javascript
-
             toLocaleDate: date => new Date(date).toLocaleDateString(),
-
-            toLocaleNumberOrNot: num => (Number.isSafeInteger(num) ? Number(num).toLocaleString() : num),
         },
     }
 </script>
