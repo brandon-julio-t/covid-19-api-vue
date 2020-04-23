@@ -56,7 +56,7 @@
                     </v-row>
 
                     <v-subheader class="d-flex justify-center pb-6">
-                        API Date: {{ toLocaleDate((data.Date)) }}
+                        API Date: {{ toLocaleDateTime(data.Date) }}
                     </v-subheader>
 
                     <v-data-table
@@ -131,7 +131,7 @@
         methods: {
             splitByCapitalLetter: text => text.match(/[A-Z][a-z]+/g).join(" "), // https://stackoverflow.com/a/7888303
 
-            toLocaleDate: date => new Date(date).toLocaleDateString(),
+            toLocaleDateTime: date => new Date(date).toLocaleString(),
         },
     }
 </script>
