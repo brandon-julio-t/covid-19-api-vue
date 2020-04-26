@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app hide-on-scroll>
+    <v-app-bar app collapse-on-scroll>
       <v-app-bar-nav-icon v-if="isSmallDisplay" @click="toggleDrawer()"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
