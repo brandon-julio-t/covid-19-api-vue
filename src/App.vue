@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app collapse-on-scroll>
+    <v-app-bar app>
       <v-app-bar-nav-icon v-if="isSmallDisplay" @click="toggleDrawer()"></v-app-bar-nav-icon>
 
       <v-toolbar-title>
@@ -21,7 +21,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn class="mx-3" icon @click="$vuetify.theme.dark = !$vuetify.theme.isDark">
+      <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.isDark">
         <v-icon v-if="$vuetify.theme.isDark">mdi-white-balance-sunny</v-icon>
         <v-icon v-else>mdi-moon-waxing-crescent</v-icon>
       </v-btn>
