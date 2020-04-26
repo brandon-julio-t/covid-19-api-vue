@@ -1,85 +1,91 @@
 <template>
-    <v-app>
-        <v-app-bar app hide-on-scroll>
-            <v-app-bar-nav-icon v-if="isSmallDisplay" @click="toggleDrawer()"></v-app-bar-nav-icon>
+  <v-app>
+    <v-app-bar app hide-on-scroll>
+      <v-app-bar-nav-icon v-if="isSmallDisplay" @click="toggleDrawer()"></v-app-bar-nav-icon>
 
-            <v-toolbar-title>
-                <v-btn href="/" text x-large>
-                    COVID 19 API Vue
-                </v-btn>
-            </v-toolbar-title>
+      <v-toolbar-title>
+        <v-btn href="/" text x-large>
+          COVID 19 API Vue
+        </v-btn>
+      </v-toolbar-title>
 
-            <div v-if="!isSmallDisplay">
-                <app-nav-item
-                    v-for="route in routes"
-                    :exact="route.name === 'Summary'"
-                    :icon="route.icon"
-                    :key="route.name"
-                    :to="route.name"
-                ></app-nav-item>
-            </div>
-        </v-app-bar>
+      <div v-if="!isSmallDisplay">
+        <app-nav-item
+          v-for="route in routes"
+          :exact="route.name === 'Summary'"
+          :icon="route.icon"
+          :key="route.name"
+          :to="route.name"
+        ></app-nav-item>
+      </div>
 
-        <v-navigation-drawer v-if="isSmallDisplay" v-model="openDrawer" app temporary>
-            <v-list nav>
-                <v-subheader>Vue and COVID 19 API</v-subheader>
+      <v-spacer></v-spacer>
 
-                <v-list-item
-                    v-for="route in routes"
-                    :exact="route.name === 'Summary'"
-                    :key="route.name"
-                    :to="route.path"
-                >
-                    <v-list-item-icon>
-                        <v-icon>{{ route.icon }}</v-icon>
-                    </v-list-item-icon>
+      <v-btn class="mx-3" icon @click="$vuetify.theme.dark = !$vuetify.theme.isDark">
+        <v-icon v-if="$vuetify.theme.isDark">mdi-white-balance-sunny</v-icon>
+        <v-icon v-else>mdi-moon-waxing-crescent</v-icon>
+      </v-btn>
+    </v-app-bar>
 
-                    <v-list-item-content>
-                        <v-list-item-title>{{ route.name }}</v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </v-list>
-        </v-navigation-drawer>
+    <v-navigation-drawer v-if="isSmallDisplay" v-model="openDrawer" app temporary>
+      <v-list nav>
+        <v-subheader>Vue and COVID 19 API</v-subheader>
 
-        <v-content>
-            <router-view></router-view>
-        </v-content>
+        <v-list-item v-for="route in routes" :exact="route.name === 'Summary'" :key="route.name" :to="route.path">
+          <v-list-item-icon>
+            <v-icon>{{ route.icon }}</v-icon>
+          </v-list-item-icon>
 
-        <app-footer></app-footer>
-    </v-app>
+          <v-list-item-content>
+            <v-list-item-title>{{ route.name }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+
+    <app-footer></app-footer>
+  </v-app>
 </template>
 
 <script>
-    import { routes } from "./router/index"
+  import { routes } from "./router/index"
 
-    import AppFooter from "./components/AppFooter"
-    import AppNavItem from "./components/AppNavItem"
+  import AppFooter from "./components/AppFooter"
+  import AppNavItem from "./components/AppNavItem"
 
-    export default {
-        name: "App",
+  export default {
+    name: "App",
 
-        components: {
-            AppFooter,
-            AppNavItem,
-        },
+    components: {
+      AppFooter,
+      AppNavItem,
+    },
 
-        data: function () {
-            return {
-                openDrawer: false,
-                routes: routes,
-            }
-        },
+    data: function () {
+      return {
+        openDrawer: false,
+        routes: routes,
+      }
+    },
 
-        computed: {
-            isSmallDisplay: function () {
-                return this.$vuetify.breakpoint.xsOnly
-            },
-        },
+    computed: {
+      isSmallDisplay: function () {
+        return this.$vuetify.breakpoint.xsOnly
+      },
+    },
 
-        methods: {
-            toggleDrawer: function () {
-                this.openDrawer = !this.openDrawer
-            },
-        },
-    }
+    created() {
+      this.$vuetify.theme.dark = true
+    },
+
+    methods: {
+      toggleDrawer: function () {
+        this.openDrawer = !this.openDrawer
+      },
+    },
+  }
 </script>
