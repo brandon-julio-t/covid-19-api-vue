@@ -1,5 +1,11 @@
 # vue-and-covid-19-api
 
+## Tech Stack
+
+- Netlify
+- Vue
+- Vuetify
+
 ## Project setup
 ```
 npm install
